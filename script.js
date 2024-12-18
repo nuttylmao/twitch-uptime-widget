@@ -13,17 +13,28 @@ const twitchUsername = urlParams.get("username") || '';
 async function UpdateUptime() {
     document.getElementById("uptimeLabel").innerHTML = await GetUptime();
 
-    setTimeout(UpdateMetrics, 10000);
+    setTimeout(UpdateUptime, 30000);
 }
 
 UpdateUptime();
 
-async function GetUptime(url) {
+async function GetUptime() {
     const response = await fetch(`https://decapi.me/twitch/uptime/${twitchUsername}`);
     const metric = await response.text();
 
-    if (metric.includes("decapi.me"))
-        return "-";
+    if (metric.includes("second"))
+    {
+        return removeTextAfterLastComma(metric);
+    }
     else
         return metric;
 }
+
+function removeTextAfterLastComma(str) {
+    const lastCommaIndex = str.lastIndexOf(',');
+    if (lastCommaIndex !== -1) {
+      return str.substring(0, lastCommaIndex);
+    } else {
+      return str; // No comma found, return the original string
+    }
+  }
